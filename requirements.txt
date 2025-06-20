@@ -1,0 +1,39 @@
+# Core dependencies
+fastapi==0.95.2
+uvicorn==0.22.0
+
+# Database
+sqlalchemy==2.0.15
+psycopg2-binary==2.9.6
+asyncpg==0.27.0
+
+# Authentication and security
+python-jose[cryptography]==3.3.0
+passlib==1.7.4
+bcrypt==4.0.1
+
+# WebSockets
+websockets==11.0.3
+
+# Environment management
+python-dotenv==1.0.0
+
+# Data validation and serialization
+pydantic==1.10.7
+
+# Date/time handling
+python-dateutil==2.8.2
+
+# Production extras
+gunicorn==20.1.0
+httptools==0.5.0
+uvloop==0.17.0
+
+# Monitoring and logging
+loguru==0.7.0
+prometheus-client==0.16.0
+
+# Testing (optional)
+pytest==7.3.1
+httpx==0.24.1
+pytest-asyncio==0.21.0
