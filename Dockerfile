@@ -3,7 +3,7 @@ FROM python:3.9-slim as builder
 
 WORKDIR /app
 
-# Install system dependencies
+# Install only essential build dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc python3-dev && \
     rm -rf /var/lib/apt/lists/*
@@ -25,24 +25,16 @@ WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Copy application code
+# Copy only essential application files
 COPY ./app ./app
-COPY ./alembic ./alembic
-COPY ./alembic.ini .
-COPY ./migrations ./migrations
 
-# Environment variables (override in production)
+# Create required directories (even if empty)
+RUN mkdir -p alembic migrations
+
+# Environment variables
 ENV PYTHONPATH=/app \
-    PORT=8000 \
-    DATABASE_URL=postgresql://user:pass@db:5432/beerdispenser \
-    LOG_LEVEL=info
+    PORT=8000
 
-# Expose port
 EXPOSE $PORT
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:$PORT/health || exit 1
-
-# Run migrations and start app
-CMD ["sh", "-c", "alembic upgrade head && gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT"]
